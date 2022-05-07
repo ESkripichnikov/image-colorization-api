@@ -36,7 +36,7 @@ def lab_to_rgb(images_l, images_ab) -> np.array:
     return np.stack(images_rgb, axis=0)
 
 
-def colorize_image(image_l) -> np.array:
+def get_colorized_image(image_l) -> np.array:
     image_l, original_size = process_image(image_l, size=(256, 256))
     image_ab = generator(image_l).detach()
     image_rgb = lab_to_rgb(image_l, image_ab)

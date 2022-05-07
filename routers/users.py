@@ -1,8 +1,8 @@
-from fastapi import APIRouter, File, UploadFile, HTTPException
-from fastapi.responses import Response, StreamingResponse
+from fastapi import APIRouter, UploadFile, HTTPException
+from fastapi.responses import Response
 from io import BytesIO
 from typing import Union
-from colorize_model.inference_functions import colorize_image
+from colorize_model.inference_functions import get_colorized_image
 from models import (
     ForwardResponse,
     MetricsErrorResponse,
@@ -13,14 +13,12 @@ router = APIRouter(tags=["For users"])
 
 
 @router.post('/forward',
-             name="UploadImage",
              response_model=ForwardResponse,
              responses={400: {"description": "Bad request"},
                         403: {"description": "The model was unable to process the data"}},)
-async def forward_image(image: UploadFile):
+async def colorize_image(image: UploadFile):
     """
-    Colorize input image in jp
-    eg format
+    Colorize input image in jpeg format
     """
     if image.content_type != "image/jpeg":
         raise HTTPException(status_code=400, detail="Please, send image in jpeg format")
@@ -28,7 +26,7 @@ async def forward_image(image: UploadFile):
     image = BytesIO(image.file.read())
 
     try:
-        image_rgb = colorize_image(image)
+        image_rgb = get_colorized_image(image)
     except Exception:
         raise HTTPException(status_code=403, detail="Please, try later")
 
