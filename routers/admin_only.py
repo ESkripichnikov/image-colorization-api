@@ -9,6 +9,7 @@ from models import (
     RetrainResponse,
 )
 from dependencies import verify_password
+from colorize_model.inference_functions import metadata
 
 router = APIRouter(
     prefix="/admin",
@@ -23,9 +24,7 @@ async def get_metadata():
     """
     Get model metadata
     """
-
-    return {'hash': 1, 'model_save_date': 2, 'experiment_name': 3}
-    pass
+    return metadata.custom_metadata_map
 
 
 @router.post('/add_data', response_model=None)

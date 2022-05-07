@@ -9,8 +9,8 @@ class ForwardResponse(BaseModel):
 
 
 class MetadataResponse(BaseModel):
-    hash: str
-    model_save_date: datetime
+    commit_hash: str
+    creation_date: str
     experiment_name: str
 
 

@@ -2,14 +2,17 @@ import numpy as np
 from PIL import Image
 import torch
 from skimage.color import lab2rgb
-from colorize_model.gan_functions import build_res_unet
-from constants import generator_path
+from constants import generator_onnx_path
+import onnxruntime
+
+ort_session = onnxruntime.InferenceSession(generator_onnx_path)
+metadata = ort_session.get_modelmeta()
+print(f"Model Description: {metadata.description}, Version {metadata.version}")
+print(f"Model metadata: {metadata.custom_metadata_map}")
 
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-generator = build_res_unet(device=device)
-generator.load_state_dict(torch.load(generator_path, map_location=device)['model_state_dict'])
-generator.eval()
+def to_numpy(tensor):
+    return tensor.detach().cpu().numpy() if tensor.requires_grad else tensor.cpu().numpy()
 
 
 def process_image(image_l, size=(256, 256)) -> torch.tensor:
@@ -38,7 +41,11 @@ def lab_to_rgb(images_l, images_ab) -> np.array:
 
 def get_colorized_image(image_l) -> np.array:
     image_l, original_size = process_image(image_l, size=(256, 256))
-    image_ab = generator(image_l).detach()
+
+    ort_inputs = {ort_session.get_inputs()[0].name: to_numpy(image_l)}
+    ort_outs = ort_session.run(None, ort_inputs)
+    image_ab = torch.tensor(ort_outs[0])
+
     image_rgb = lab_to_rgb(image_l, image_ab)
     image_rgb = (image_rgb.squeeze(0) * 255).astype(np.uint8)
     image_rgb = Image.fromarray(image_rgb)
