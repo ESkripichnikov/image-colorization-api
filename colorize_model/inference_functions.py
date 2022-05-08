@@ -4,6 +4,8 @@ import torch
 from skimage.color import lab2rgb
 from constants import generator_onnx_path
 import onnxruntime
+import time
+import matplotlib.pyplot as plt
 
 ort_session = onnxruntime.InferenceSession(generator_onnx_path)
 metadata = ort_session.get_modelmeta()
@@ -51,3 +53,29 @@ def get_colorized_image(image_l) -> np.array:
     image_rgb = Image.fromarray(image_rgb)
     image_rgb = image_rgb.resize(original_size, Image.Resampling.BICUBIC)
     return image_rgb
+
+
+def visualize(generator, data, save=False, path=None, device="cpu"):
+    generator.eval()
+    generator.eval()
+    with torch.no_grad():
+        img_l, img_ab = data[0].to(device), data[1].to(device)
+        ab_fake = generator(img_l).detach()
+
+    fake_imgs = lab_to_rgb(img_l, ab_fake)
+    real_imgs = lab_to_rgb(img_l, img_ab)
+    fig = plt.figure(figsize=(15, 8))
+    for i in range(5):
+        ax = plt.subplot(3, 5, i + 1)
+        ax.imshow(img_l[i][0].cpu(), cmap='gray')
+        ax.axis("off")
+        ax = plt.subplot(3, 5, i + 1 + 5)
+        ax.imshow(fake_imgs[i])
+        ax.axis("off")
+        ax = plt.subplot(3, 5, i + 1 + 10)
+        ax.imshow(real_imgs[i])
+        ax.axis("off")
+    plt.show()
+    if save:
+        fig.savefig(f"{path}colorization_{time.time()}.png")
+    return real_imgs, fake_imgs
