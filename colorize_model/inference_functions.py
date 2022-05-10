@@ -1,11 +1,19 @@
+import os
 import numpy as np
 from PIL import Image
 import torch
-from constants import generator_onnx_path
 import onnxruntime
+import wandb
 from colorize_model.utils import lab_to_rgb
+from constants import wandb_project_path
 
-ort_session = onnxruntime.InferenceSession(generator_onnx_path)
+
+wandb_api = wandb.Api()
+model_artifact = wandb_api.artifact(wandb_project_path + "/generator:best")
+model_dir = model_artifact.download(root="colorize_model/saved_models")
+model_path = os.path.join(model_dir, "generator.onnx")
+
+ort_session = onnxruntime.InferenceSession(model_path)
 metadata = ort_session.get_modelmeta()
 print(f"Model Description: {metadata.description}, Version {metadata.version}")
 print(f"Model metadata: {metadata.custom_metadata_map}")

@@ -4,6 +4,7 @@ from PIL import Image
 import torch
 from skimage.color import rgb2lab
 from torchvision import transforms
+import wandb
 
 
 def get_data_paths(path):
@@ -11,8 +12,8 @@ def get_data_paths(path):
     np.random.seed(14)
     paths_subset = np.random.choice(paths, 10000, replace=False)  # choosing 10000 images randomly
     rand_idx = np.random.permutation(10000)
-    train_idx = rand_idx[:8000]  # choosing the first 8000 as training set
-    val_idx = rand_idx[8000:]  # choosing last 2000 as validation set
+    train_idx = rand_idx[:32]  # choosing the first 8000 as training set
+    val_idx = rand_idx[32:48]  # choosing last 2000 as validation set
     train_paths = paths_subset[train_idx]
     val_paths = paths_subset[val_idx]
     return train_paths, val_paths
@@ -65,3 +66,18 @@ def get_dataloaders(path, batch_size=16, num_workers=0, pin_memory=True):
         pin_memory=pin_memory,
     )
     return train_dataloader, val_dataloader
+
+
+def log_dataset(path, name=None, aliases=None):
+    with wandb.init(project="Colorize_GAN", job_type="load-data", name=name) as run:
+        raw_data = wandb.Artifact(
+            "coco-10k", type="dataset",
+            description="Coco dataset",
+            metadata={"source": "fastai.data.external.untar_data(URLs.COCO_SAMPLE)",
+                      "size": len(glob.glob(path + "/*.jpg"))})
+
+        raw_data.add_dir(path)
+        run.log_artifact(raw_data, aliases=aliases)
+
+
+# log_dataset("colorize_model/dataset", name="adding_dataset", aliases=["original"])
