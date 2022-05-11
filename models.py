@@ -1,6 +1,6 @@
 from __future__ import annotations
 from datetime import datetime
-from typing import List, Optional
+from typing import List, Optional, Tuple
 from pydantic import BaseModel, Field
 
 
@@ -14,6 +14,35 @@ class MetadataResponse(BaseModel):
     experiment_name: str
 
 
+class AddDataResponse(BaseModel):
+    result: str
+
+
+class ExperimentConfig(BaseModel):
+    n_epochs: Optional[int] = 5
+    batch_size: Optional[int] = 16
+    use_pretrained_generator: Optional[bool] = True
+    generator_learning_rate: Optional[float] = 2e-4
+    discr_learning_rate: Optional[float] = 2e-4
+    generator_betas: Optional[Tuple[float, ...]] = (0.5, 0.999)
+    discr_betas: Optional[Tuple[float, ...]] = (0.5, 0.999)
+    lambda_l1: Optional[float] = 100.
+
+
+class ModelMetadata(BaseModel):
+    experiment_name: str
+    model_description: str
+
+
+class ModelsMetadata(BaseModel):
+    generator: ModelMetadata
+    discriminator: ModelMetadata
+
+
+class RetrainResponse(BaseModel):
+    experiment_id: str
+
+
 class MetricsResponseItem(BaseModel):
     metric_name: str
     metric_value: float
@@ -23,17 +52,8 @@ class MetricsResponse(BaseModel):
     __root__: List[MetricsResponseItem]
 
 
-class MetricsErrorResponseItem(BaseModel):
-    file_name: str
-    error_text: str
-
-
-class MetricsErrorResponse(BaseModel):
-    __root__: List[MetricsErrorResponseItem]
-
-
-class RetrainResponse(BaseModel):
-    experiment_id: float
+class DeployResponse(BaseModel):
+    result: str
 
 
 class ForwardPostRequest(BaseModel):

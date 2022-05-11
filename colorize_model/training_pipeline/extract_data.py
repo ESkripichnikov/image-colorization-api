@@ -5,6 +5,7 @@ import torch
 from skimage.color import rgb2lab
 from torchvision import transforms
 import wandb
+from constants import dataset_path
 
 
 def get_data_paths(path):
@@ -68,7 +69,7 @@ def get_dataloaders(path, batch_size=16, num_workers=0, pin_memory=True):
     return train_dataloader, val_dataloader
 
 
-def log_dataset(path, name=None, aliases=None):
+def log_dataset(path=dataset_path, name=None, aliases=None):
     with wandb.init(project="Colorize_GAN", job_type="load-data", name=name) as run:
         raw_data = wandb.Artifact(
             "coco-10k", type="dataset",
@@ -78,6 +79,8 @@ def log_dataset(path, name=None, aliases=None):
 
         raw_data.add_dir(path)
         run.log_artifact(raw_data, aliases=aliases)
+        raw_data.wait()
+        print(raw_data.id, raw_data.name, raw_data.version)
 
 
-# log_dataset("colorize_model/dataset", name="adding_dataset", aliases=["original"])
+# log_dataset("colorize_model/dataset", name="adding_new_data", aliases=["latest", "custom"])

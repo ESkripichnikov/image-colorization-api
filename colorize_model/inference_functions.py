@@ -9,13 +9,13 @@ from constants import wandb_project_path
 
 
 wandb_api = wandb.Api()
-model_artifact = wandb_api.artifact(wandb_project_path + "/generator:best")
+model_artifact = wandb_api.artifact(f"{wandb_project_path}/generator:best")
 model_dir = model_artifact.download(root="colorize_model/saved_models")
 model_path = os.path.join(model_dir, "generator.onnx")
 
 ort_session = onnxruntime.InferenceSession(model_path)
 metadata = ort_session.get_modelmeta()
-print(f"Model Description: {metadata.description}, Version {metadata.version}")
+print(f"Model Description: {metadata.description}")
 print(f"Model metadata: {metadata.custom_metadata_map}")
 
 

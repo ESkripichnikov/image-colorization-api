@@ -1,4 +1,3 @@
-import torch
 from colorize_model.training_pipeline.training_pipeline import pipeline
 
 config = dict(
@@ -16,14 +15,11 @@ models_metadata = {
     "generator": {
         "experiment_name": "new_lr",
         "model_description": "Generator from GAN converted from PyTorch",
-        "model_version": 2,
     },
     "discriminator": {
         "experiment_name": "new_lr",
         "model_description": "Discriminator from GAN converted from PyTorch",
-        "model_version": 2,
     }
 }
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-generator, discriminator = pipeline(config, models_metadata, device)
+run_path = pipeline(config, models_metadata)

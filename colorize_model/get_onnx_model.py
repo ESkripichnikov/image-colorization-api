@@ -7,7 +7,7 @@ import wandb
 
 
 def save_model_onnx(model, input_example, input_name, output_name, path_to_save,
-                    experiment_name, model_description, model_version):
+                    experiment_name, model_description):
     # Input to the model
     output_example = model(input_example)
 
@@ -42,7 +42,6 @@ def save_model_onnx(model, input_example, input_name, output_name, path_to_save,
     meta.key = "experiment_name"
     meta.value = experiment_name
     onnx_model.doc_string = model_description
-    onnx_model.model_version = model_version  # This must be an integer or long.
     onnx.save(onnx_model, path_to_save)
 
 

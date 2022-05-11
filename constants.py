@@ -1,5 +1,5 @@
-generator_path = "colorize_model/saved_models/final_generator.pt"
-generator_onnx_path = "colorize_model/saved_models/generator.onnx"
+# generator_path = "colorize_model/saved_models/final_generator.pt"
+models_path = "colorize_model/saved_models"
 dataset_path = "colorize_model/dataset"
 wandb_project_name = "Colorize_GAN"
 wandb_project_path = "eskripichnikov/Colorize_GAN"

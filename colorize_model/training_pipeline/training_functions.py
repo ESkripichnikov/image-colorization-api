@@ -2,7 +2,7 @@ import torch
 from torch import nn
 from tqdm import tqdm, trange
 import wandb
-from constants import experiments_path
+from constants import models_path
 from colorize_model.utils import get_rgb_images
 from colorize_model.get_onnx_model import save_model_onnx
 
@@ -56,10 +56,10 @@ def train_model(generator, discriminator, opt_g, opt_d, criterion, train_dataloa
         wandb.log({"Real Images": [wandb.Image(img, caption="real") for img in real_images],
                    "Fake Images": [wandb.Image(img, caption="fake") for img in fake_images]})
 
-        path_to_save = f"{experiments_path}/generator.onnx"
+        path_to_save = f"{models_path}/generator.onnx"
         save_model_onnx(generator, img_l, "image_l", "image_ab", path_to_save, **models_metadata["generator"])
         wandb.save(path_to_save, policy="now")
 
-        path_to_save = f"{experiments_path}/discriminator.onnx"
+        path_to_save = f"{models_path}/discriminator.onnx"
         save_model_onnx(discriminator, fake_image, "image", "patch", path_to_save, **models_metadata["discriminator"])
         wandb.save(path_to_save, policy="now")
