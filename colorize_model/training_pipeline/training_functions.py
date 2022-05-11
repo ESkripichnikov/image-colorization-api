@@ -1,7 +1,7 @@
 import torch
+import wandb
 from torch import nn
 from tqdm import tqdm, trange
-import wandb
 from constants import models_path
 from colorize_model.utils import get_rgb_images
 from colorize_model.get_onnx_model import save_model_onnx

@@ -1,7 +1,6 @@
 from __future__ import annotations
-from datetime import datetime
+from pydantic import BaseModel
 from typing import List, Optional, Tuple
-from pydantic import BaseModel, Field
 
 
 class ForwardResponse(BaseModel):
@@ -54,21 +53,3 @@ class MetricsResponse(BaseModel):
 
 class DeployResponse(BaseModel):
     result: str
-
-
-class ForwardPostRequest(BaseModel):
-    file: Optional[bytes] = Field(None, description='Image to upload')
-
-
-class ForwardBatchPostRequest(BaseModel):
-    file: Optional[bytes] = Field(None, description='Zip to upload')
-
-
-class EvaluatePostRequest(BaseModel):
-    file: Optional[bytes] = Field(
-        None, description='Zip to upload with correct answers'
-    )
-
-
-class AddDataPostRequest(BaseModel):
-    file: Optional[bytes] = Field(None, description='Zip to upload')

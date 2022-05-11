@@ -1,8 +1,8 @@
-import torch
-from skimage.color import lab2rgb
 import time
-import matplotlib.pyplot as plt
+import torch
 import numpy as np
+import matplotlib.pyplot as plt
+from skimage.color import lab2rgb
 
 
 def lab_to_rgb(images_l, images_ab) -> np.array:

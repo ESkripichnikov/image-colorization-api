@@ -1,9 +1,9 @@
 import os
-import numpy as np
-from PIL import Image
-import torch
 import onnxruntime
+import torch
+import numpy as np
 import wandb
+from PIL import Image
 from colorize_model.utils import lab_to_rgb
 from constants import wandb_project_path
 

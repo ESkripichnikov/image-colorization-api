@@ -1,6 +1,6 @@
 import os
-import wandb
 import torch
+import wandb
 from torch import optim
 from constants import wandb_project_name, models_path
 from colorize_model.training_pipeline.extract_data import get_dataloaders

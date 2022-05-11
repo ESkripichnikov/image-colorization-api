@@ -56,19 +56,3 @@ def log_model(path, name=None, aliases=None):
 
         trained_model_artifact.add_file(path)
         run.log_artifact(trained_model_artifact, aliases=aliases)
-
-
-# log_model("colorize_model/saved_models/generator.onnx", name="generator_initialization",
-#           aliases=["best"])
-#
-# with wandb.init(project="Colorize_GAN", job_type="initialize",
-#                 name="pretrained_generator_init") as run:
-#     checkpoint = torch.load("colorize_model/saved_models/pretrained_generator.pt",
-#                             map_location="cpu")
-#     trained_model_artifact = wandb.Artifact(
-#         "pretrained_generator", type="model",
-#         description="Pretrained generator on L1 Loss",
-#         metadata={"architecture": "res18", "n_epochs": 20, "l1_loss": checkpoint["l1_loss"]})
-#
-#     trained_model_artifact.add_file("colorize_model/saved_models/pretrained_generator.pt")
-#     run.log_artifact(trained_model_artifact, aliases=["baseline"])

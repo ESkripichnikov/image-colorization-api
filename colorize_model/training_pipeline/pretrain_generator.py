@@ -1,5 +1,5 @@
-from tqdm import tqdm, trange
 import torch
+from tqdm import tqdm, trange
 
 
 def pretrain_generator(generator, train_dataloader, optimizer, criterion, epochs, path, device):

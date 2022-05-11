@@ -1,10 +1,10 @@
 import glob
 import numpy as np
-from PIL import Image
 import torch
+import wandb
+from PIL import Image
 from skimage.color import rgb2lab
 from torchvision import transforms
-import wandb
 from constants import dataset_path
 
 
@@ -81,6 +81,3 @@ def log_dataset(path=dataset_path, name=None, aliases=None):
         run.log_artifact(raw_data, aliases=aliases)
         raw_data.wait()
         print(raw_data.id, raw_data.name, raw_data.version)
-
-
-# log_dataset("colorize_model/dataset", name="adding_new_data", aliases=["latest", "custom"])

@@ -1,12 +1,12 @@
-from fastapi import APIRouter, File, UploadFile, HTTPException
-from fastapi.responses import Response, StreamingResponse
+import numpy as np
 from io import BytesIO
+from PIL import Image
 from typing import List
 from zipfile import ZipFile
-from PIL import Image
-import numpy as np
-from colorize_model.inference_functions import get_colorized_image
+from fastapi import APIRouter, File, UploadFile, HTTPException
+from fastapi.responses import Response, StreamingResponse
 from models import ForwardResponse
+from colorize_model.inference import get_colorized_image
 
 router = APIRouter(tags=["For users"],
                    responses={400: {"description": "Bad request"},
@@ -84,17 +84,22 @@ async def evaluate_metrics(images: List[UploadFile] = File(...,
     metrics = {"l1_loss": 0, "mse_loss": 0}
     for image in images:
         image_ = BytesIO(image.file.read())
+        pil_image = np.asarray(Image.open(image_))
+
+        if len(pil_image.shape) != 3:
+            raise HTTPException(status_code=400, detail=f"{image.filename} is grayscale. "
+                                                        f"All images must be in color")
 
         try:
             image_rgb = get_colorized_image(image_)
         except Exception:
-            raise HTTPException(status_code=403, detail=f"{image.filename} unable to process."
+            raise HTTPException(status_code=403, detail=f"{image.filename} unable to process. "
                                                         f"Please, try later")
         images_rgb[image.filename] = image_rgb
 
         size = image_rgb.size[0] * image_rgb.size[1]
-        metrics["l1_loss"] += np.sum(abs(np.asarray(Image.open(image_)) - np.asarray(image_rgb))) / size
-        metrics["mse_loss"] += np.sum(np.power(np.asarray(Image.open(image_)) - np.asarray(image_rgb), 2)) / size
+        metrics["l1_loss"] += np.sum(abs(pil_image - np.asarray(image_rgb))) / size
+        metrics["mse_loss"] += np.sum(np.power(pil_image - np.asarray(image_rgb), 2)) / size
     metrics["l1_loss"] = str(round(metrics["l1_loss"] / len(images), 3))
     metrics["mse_loss"] = str(round(metrics["mse_loss"] / len(images), 3))
 
