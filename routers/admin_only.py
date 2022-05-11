@@ -48,7 +48,7 @@ async def add_new_data(images: List[UploadFile] = File(...,
             content = await image.read()  # async read
             await out_file.write(content)  # async write
 
-    log_dataset(name="adding_new_data", aliases=["latest", "custom"])
+    log_dataset(name="adding_new_data", aliases=["latest"])
 
     return {"result": "Images added to dataset successfully"}
 
@@ -91,12 +91,15 @@ async def deploy_model(experiment_id: str):
         run = wandb_api.run(run_path)
     except wandb.errors.CommError:
         raise HTTPException(status_code=400, detail="Experiment id is not valid")
-    new_artifact = run.logged_artifacts()[0]
-    new_artifact.aliases.append('best')
-    new_artifact.save()
+    try:
+        new_artifact = run.logged_artifacts()[0]
+    except wandb.errors.CommError:
+        raise HTTPException(status_code=400, detail="This experiment doesn't have model artifact")
 
     prev_artifact = wandb_api.artifact(f"{wandb_project_name}/generator:best")
     prev_artifact.aliases.remove('best')
     prev_artifact.save()
 
+    new_artifact.aliases.append('best')
+    new_artifact.save()
     return {'result': "Model has been replaced successfully."}

@@ -13,8 +13,8 @@ def get_data_paths(path):
     np.random.seed(14)
     paths_subset = np.random.choice(paths, 10000, replace=False)  # choosing 10000 images randomly
     rand_idx = np.random.permutation(10000)
-    train_idx = rand_idx[:32]  # choosing the first 8000 as training set
-    val_idx = rand_idx[32:48]  # choosing last 2000 as validation set
+    train_idx = rand_idx[:8]  # choosing the first 8000 as training set
+    val_idx = rand_idx[8:12]  # choosing last 2000 as validation set
     train_paths = paths_subset[train_idx]
     val_paths = paths_subset[val_idx]
     return train_paths, val_paths

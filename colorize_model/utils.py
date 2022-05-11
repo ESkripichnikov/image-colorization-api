@@ -30,7 +30,7 @@ def get_rgb_images(generator, data, show=False, save=False, path=None, device="c
     fake_imgs = lab_to_rgb(img_l, ab_fake)
     real_imgs = lab_to_rgb(img_l, img_ab)
     fig = plt.figure(figsize=(15, 8))
-    for i in range(5):
+    for i in range(4):
         ax = plt.subplot(3, 5, i + 1)
         ax.imshow(img_l[i][0].cpu(), cmap='gray')
         ax.axis("off")
