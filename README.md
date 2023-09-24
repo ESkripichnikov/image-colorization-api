@@ -22,19 +22,4 @@ The Image Colorization API is built using the following technologies and framewo
 - WandB: A tool for visualizing and tracking machine learning experiments.
 - GitHub: The version control system and code hosting platform used for managing the repository.
 
-## Repository Structure
-
-The structure of this repository is organized as follows:
-
-- **app**: Contains the main source code for the Image Colorization API.
-  - `main.py`: The main FastAPI application.
-  - `colorization.py`: The colorization logic and model inference functions.
-- **models**: Stores the trained models and ONNX model files.
-- **data**: The dataset used for training the models.
-- **scripts**: Additional scripts for data processing, model training, and experimentation.
-- **tests**: Unit tests for the functionality of the service.
-- **requirements.txt**: A file listing the required Python dependencies for running the service.
-- **Dockerfile**: The Dockerfile for containerizing the Image Colorization API.
-- **README.md**: The file you are currently reading, providing an overview of the repository and its structure.
-
 Feel free to explore each directory for more details about the specific components and functionalities of the Image Colorization Service.
